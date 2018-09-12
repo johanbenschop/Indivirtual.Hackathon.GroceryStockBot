@@ -1,0 +1,14 @@
+﻿{
+    "name": "GroceryStockBot",
+    "secretKey": "",
+    "services": [
+      {
+        "type": "endpoint",
+        "name": "GroceryStockBot",
+        "id": "https://localhost:5001/api/messages",
+        "appId": "",
+        "appPassword": "",
+        "endpoint": "https://localhost:5001/api/messages"
+      }
+    ]
+}
