@@ -11,7 +11,7 @@ using Microsoft.Recognizers.Text;
 using System.Linq;
 using Indivirtual.Hackathon.GroceryStockBot.States;
 
-namespace Indivirtual.Hackathon.GroceryStockBot
+namespace Indivirtual.Hackathon.GroceryStockBot // Indivirtual_Hackathon_GroceryStockBot
 {
     public class LuisBot : IBot
     {
@@ -23,10 +23,12 @@ namespace Indivirtual.Hackathon.GroceryStockBot
         {
             dialogs = new DialogSet();
             dialogs.Add("None", new WaterfallStep[] { DefaultDialog });
-            dialogs.Add("Calendar_Add", new WaterfallStep[] { AskReminderTitle, SaveReminder });
-            dialogs.Add("Calendar_Find", new WaterfallStep[] { ShowReminders, ConfirmShow });
-            dialogs.Add("TitlePrompt", new TextPrompt(TitleValidator));
-            dialogs.Add("ShowReminderPrompt", new ChoicePrompt(Culture.English));
+            dialogs.Add("AddToCart", new WaterfallStep[] { AddToCart });
+            //dialogs.Add("None", new WaterfallStep[] { DefaultDialog });
+            //dialogs.Add("Calendar_Add", new WaterfallStep[] { AskReminderTitle, SaveReminder });
+            //dialogs.Add("Calendar_Find", new WaterfallStep[] { ShowReminders, ConfirmShow });
+            //dialogs.Add("TitlePrompt", new TextPrompt(TitleValidator));
+            //dialogs.Add("ShowReminderPrompt", new ChoicePrompt(Culture.English));
         }
 
         public async Task OnTurn(ITurnContext turnContext)
@@ -40,7 +42,7 @@ namespace Indivirtual.Hackathon.GroceryStockBot
                 var userState = turnContext.GetUserState<UserState>();
                 if (userState.Reminders == null)
                 {
-                    userState.Reminders = new List<Reminder>();
+                    userState.Reminders = new List<ReminderState>();
                 }
 
                 var state = turnContext.GetConversationState<Dictionary<string, object>>();
@@ -78,7 +80,7 @@ namespace Indivirtual.Hackathon.GroceryStockBot
 
         private Task DefaultDialog(DialogContext dialogContext, object args, SkipStepFunction next)
         {
-            return dialogContext.Context.SendActivity("Hi! I'm a simple reminder bot. I can add reminders and show them.");
+            return dialogContext.Context.SendActivity("Hey! Ik ben Indivirtual's boodschappen manager. Je kan mij vragen om iets op het bestellijste te zetten of melden wanneer iets op is.");
         }
 
         private async Task TitleValidator(ITurnContext context, Prompts.TextResult result)
@@ -89,10 +91,15 @@ namespace Indivirtual.Hackathon.GroceryStockBot
                 await context.SendActivity("Title should be at least 3 characters long.");
             }
         }
-        
+
+        private async Task AddToCart(DialogContext dialogContext, object args, SkipStepFunction next)
+        {
+            await dialogContext.Context.SendActivity($"Ojee, ik ben bang dat ik het boodschappenlijste kwijt ben...");
+        }
+
         private async Task AskReminderTitle(DialogContext dialogContext, object args, SkipStepFunction next)
         {
-            var reminder = new Reminder(dialogContext.ActiveDialog.State);
+            var reminder = new ReminderState(dialogContext.ActiveDialog.State);
             dialogContext.ActiveDialog.State = reminder;
             if (!string.IsNullOrEmpty(reminder.Title))
             {
@@ -106,7 +113,7 @@ namespace Indivirtual.Hackathon.GroceryStockBot
 
         private async Task SaveReminder(DialogContext dialogContext, object args, SkipStepFunction next)
         {
-            var reminder = new Reminder(dialogContext.ActiveDialog.State);
+            var reminder = new ReminderState(dialogContext.ActiveDialog.State);
             if (args is Prompts.TextResult textResult)
             {
                 reminder.Title = textResult.Value;
