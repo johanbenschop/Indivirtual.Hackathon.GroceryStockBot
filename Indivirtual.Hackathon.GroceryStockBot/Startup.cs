@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Indivirtual.Hackathon.GroceryStockBot.DataContexts;
 using Indivirtual.Hackathon.GroceryStockBot.States;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -10,6 +11,7 @@ using Microsoft.Bot.Builder.BotFramework;
 using Microsoft.Bot.Builder.Core.Extensions;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Builder.TraceExtensions;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -32,6 +34,11 @@ namespace Indivirtual.Hackathon.GroceryStockBot
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
+
+            services.AddDbContext<DataContext>(options =>
+            {
+                options.UseInMemoryDatabase(databaseName: "dataContext");
             });
 
             services.AddBot<LuisBot>(options =>
