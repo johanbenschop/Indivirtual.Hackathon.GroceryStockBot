@@ -24,6 +24,7 @@ namespace Indivirtual.Hackathon.GroceryStockBot // Indivirtual_Hackathon_Grocery
             dialogs = new DialogSet();
             dialogs.Add("None", new WaterfallStep[] { DefaultDialog });
             dialogs.Add("AddToCart", new WaterfallStep[] { AddToCart });
+            dialogs.Add("RemoveFromCart", new WaterfallStep[] { RemoveFromCart });
             //dialogs.Add("None", new WaterfallStep[] { DefaultDialog });
             //dialogs.Add("Calendar_Add", new WaterfallStep[] { AskReminderTitle, SaveReminder });
             //dialogs.Add("Calendar_Find", new WaterfallStep[] { ShowReminders, ConfirmShow });
@@ -35,7 +36,7 @@ namespace Indivirtual.Hackathon.GroceryStockBot // Indivirtual_Hackathon_Grocery
         {
             if (turnContext.Activity.Type == ActivityTypes.ConversationUpdate && turnContext.Activity.MembersAdded.FirstOrDefault()?.Id == turnContext.Activity.Recipient.Id)
             {
-                await turnContext.SendActivity("Hi! I'm a simple reminder bot. I can add reminders and show them.");
+                await turnContext.SendActivity("Hi!");
             }
             else if (turnContext.Activity.Type == ActivityTypes.Message)
             {
@@ -53,8 +54,8 @@ namespace Indivirtual.Hackathon.GroceryStockBot // Indivirtual_Hackathon_Grocery
                 {
                     if (dialogContext.ActiveDialog != null)
                     {
-                        await turnContext.SendActivity("Ok... Cancelled");
                         dialogContext.EndAll();
+                        await turnContext.SendActivity("Ok... Cancelled");
                     }
                     else
                     {
@@ -80,74 +81,37 @@ namespace Indivirtual.Hackathon.GroceryStockBot // Indivirtual_Hackathon_Grocery
 
         private Task DefaultDialog(DialogContext dialogContext, object args, SkipStepFunction next)
         {
-            return dialogContext.Context.SendActivity("Hey! Ik ben Indivirtual's boodschappen manager. Je kan mij vragen om iets op het bestellijste te zetten of melden wanneer iets op is.");
+            return dialogContext.Context.SendActivity("Hey! Ik ben Indivirtual's boodschappen manager. Je kan mij vragen om iets op het boodschappen lijstje te zetten of melden wanneer iets op is.");
         }
-
-        private async Task TitleValidator(ITurnContext context, Prompts.TextResult result)
-        {
-            if (string.IsNullOrWhiteSpace(result.Value) || result.Value.Length < 3)
-            {
-                result.Status = Prompts.PromptStatus.NotRecognized;
-                await context.SendActivity("Title should be at least 3 characters long.");
-            }
-        }
-
+        
         private async Task AddToCart(DialogContext dialogContext, object args, SkipStepFunction next)
         {
-            await dialogContext.Context.SendActivity($"Ojee, ik ben bang dat ik het boodschappenlijste kwijt ben...");
+            await dialogContext.Context.SendActivity($"Ojee, ik ben bang dat ik het boodschappen lijstje kwijt ben...");
         }
 
-        private async Task AskReminderTitle(DialogContext dialogContext, object args, SkipStepFunction next)
+        private async Task RemoveFromCart(DialogContext dialogContext, object args, SkipStepFunction next)
         {
-            var reminder = new ReminderState(dialogContext.ActiveDialog.State);
-            dialogContext.ActiveDialog.State = reminder;
-            if (!string.IsNullOrEmpty(reminder.Title))
-            {
-                await dialogContext.Continue();
-            }
-            else
-            {
-                await dialogContext.Prompt("TitlePrompt", "What would you like to call your reminder?");
-            }
+            await dialogContext.Context.SendActivity($"Ojee, ik ben bang dat ik het boodschappen lijstje kwijt ben...");
         }
 
-        private async Task SaveReminder(DialogContext dialogContext, object args, SkipStepFunction next)
+        private async Task ShowOverviewBonus(DialogContext dialogContext, object args, SkipStepFunction next)
         {
-            var reminder = new ReminderState(dialogContext.ActiveDialog.State);
-            if (args is Prompts.TextResult textResult)
-            {
-                reminder.Title = textResult.Value;
-            }
-            await dialogContext.Context.SendActivity($"Your reminder named '{reminder.Title}' is set.");
-            var userContext = dialogContext.Context.GetUserState<UserState>();
-            userContext.Reminders.Add(reminder);
-            await dialogContext.End();
+            await dialogContext.Context.SendActivity($"Ojee, ik ben bang dat ik het boodschappen lijstje kwijt ben...");
         }
 
-        private async Task ShowReminders(DialogContext dialogContext, object args, SkipStepFunction next)
+        private async Task WhatIsCheapest(DialogContext dialogContext, object args, SkipStepFunction next)
         {
-            var userContext = dialogContext.Context.GetUserState<UserState>();
-            if (userContext.Reminders.Count == 0)
-            {
-                await dialogContext.Context.SendActivity("No reminders found.");
-                await dialogContext.End();
-            }
-            else
-            {
-                var choices = userContext.Reminders.Select(x => new Prompts.Choices.Choice() { Value = x.Title.Length < 15 ? x.Title : x.Title.Substring(0, 15) + "..." }).ToList();
-                await dialogContext.Prompt("ShowReminderPrompt", "Select the reminder to show: ", new ChoicePromptOptions() { Choices = choices });
-            }
+            await dialogContext.Context.SendActivity($"Ojee, ik ben bang dat ik het boodschappen lijstje kwijt ben...");
         }
 
-        private async Task ConfirmShow(DialogContext dialogContext, object args, SkipStepFunction next)
+        private async Task OrderDate(DialogContext dialogContext, object args, SkipStepFunction next)
         {
-            var userContext = dialogContext.Context.GetUserState<UserState>();
-            if (args is Prompts.ChoiceResult choice)
-            {
-                var reminder = userContext.Reminders[choice.Value.Index];
-                await dialogContext.Context.SendActivity($"Reminder: {reminder.Title}");
-            }
-            await dialogContext.End();
+            await dialogContext.Context.SendActivity($"Ojee, ik ben bang dat ik het boodschappen lijstje kwijt ben...");
+        }
+
+        private async Task CheckAmountofProduct(DialogContext dialogContext, object args, SkipStepFunction next)
+        {
+            await dialogContext.Context.SendActivity($"Ojee, ik ben bang dat ik het boodschappen lijstje kwijt ben...");
         }
     }
 }
